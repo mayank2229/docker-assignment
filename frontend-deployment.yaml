@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: node-frontend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: node-frontend
+  template:
+    metadata:
+      labels:
+        app: node-frontend
+    spec:
+      containers:
+      - name: node-frontend
+        image: node-frontend:latest
+        imagePullPolicy: Never
+        ports:
+        - containerPort: 3000
+        env:
+        - name: FLASK_URL
+          value: "http://flask-backend:5000"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: node-frontend
+spec:
+  selector:
+    app: node-frontend
+  ports:
+  - port: 3000
+    targetPort: 3000
+  type: NodePort
